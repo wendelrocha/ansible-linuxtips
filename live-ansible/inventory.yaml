@@ -1,0 +1,22 @@
+redhat:
+  hosts:    
+    alma:
+      ansible_host: 129.80.114.68
+      ansible_user: opc
+    rocky:
+      ansible_host: 129.80.18.7
+      ansible_user: rocky
+debian:
+  hosts:
+    ubuntu:
+      ansible_host: 129.80.206.51 
+      ansible_user: ubuntu
+
+network:
+  children:
+    redhat:
+    debian:
+
+datacenter:
+  children:
+    network:

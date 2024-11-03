@@ -1,0 +1,9 @@
+[myservers]
+[redhat]
+129.80.18.7 ansible_user=rocky
+rocky ansible_user=rocky
+129.80.114.68 ansible_user=opc
+alma ansible_user=opc
+[debian]
+129.80.206.51 ansible_user=ubuntu
+ubuntu ansible_user=ubuntu

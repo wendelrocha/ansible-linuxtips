@@ -1,0 +1,2 @@
+#!/usr/bin/zsh
+ssh -i id_rsa opc@129.80.114.68

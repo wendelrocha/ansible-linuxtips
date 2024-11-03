@@ -1,0 +1,2 @@
+#!/usr/bin/zsh
+ssh -i id_rsa ubuntu@129.80.206.51

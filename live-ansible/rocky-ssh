@@ -1,0 +1,2 @@
+#!/usr/bin/zsh
+ssh -i id_rsa rocky@129.80.18.7

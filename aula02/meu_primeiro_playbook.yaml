@@ -1,0 +1,61 @@
+---
+- hosts: datacenter
+  become: yes # Garante execução como sudo
+  gather_facts: yes  # Garante a coleta de facts do sistema
+
+  tasks:
+  
+  - name: Instalando o nginx
+    ansible.builtin.package:
+      name: nginx
+      state: latest
+      update_cache: yes
+  
+  - name: Habilitando nginx no inicialização
+    ansible.builtin.service:
+      name: nginx
+      enabled: true
+  
+  - name: Iniciando o nginx
+    ansible.builtin.shell:
+      cmd: systemctl start nginx
+  
+  - name: Definir o diretório de destino baseado no sistema operacional
+    set_fact:
+      nginx_html_dir: "{{ '/var/www/html' if ansible_os_family == 'Debian' else '/usr/share/nginx/html' }}"
+
+  # - name: Remover todos os arquivos da pasta HTML do Nginx
+  #   ansible.builtin.file:
+  #     path: "{{ nginx_html_dir }}"
+  #     state: directory
+  #     recurse: yes
+
+  # - name: Remover todos os arquivos da pasta HTML do Nginx
+  #   ansible.builtin.command: 
+  #     cmd: rm -rf {{ nginx_html_dir }}/*
+
+  - name: Criar a pasta HTML do Nginx se não existir
+    ansible.builtin.file:
+      path: "{{ nginx_html_dir }}"
+      state: directory
+ 
+  - name: Copiar arquivos para o diretório HTML do Nginx
+    ansible.builtin.copy:
+      src: amaze-photography-bootstrap-html5-template/
+      dest: "{{ nginx_html_dir }}"
+  
+  - name: Definir arquivo nginx baseado no sistema operacional
+    set_fact:
+      nginx_conf_file: "{{ 'nginx-ubuntu.conf' if ansible_os_family == 'Debian' else 'nginx.conf' }}"
+  
+  - name: Copiar arquivo nginx.conf
+    ansible.builtin.copy:
+      src: "{{nginx_conf_file}}"
+      dest: /etc/nginx/nginx.conf 
+    notify: Restart nginx  # Notifica o manipulador para reiniciar o Nginx
+
+  handlers:
+    - name: Restart nginx
+      ansible.builtin.systemd:
+        name: nginx
+        state: restarted
